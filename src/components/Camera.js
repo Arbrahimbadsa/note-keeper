@@ -1,4 +1,5 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 const CameraWrapper = styled.div`
   height: 100vh;
@@ -32,7 +33,7 @@ const Button = styled.button`
     opacity: 0.8;
   }
 `;
-const Camera = ({ onSnap, onShowPreview }) => {
+const Camera = ({ onSnap }) => {
   const video = useRef(null);
   const getImage = (video) => {
     const c = document.createElement("canvas");
@@ -45,11 +46,15 @@ const Camera = ({ onSnap, onShowPreview }) => {
   useEffect(() => {
     (async () => {
       try {
-        const facingMode = await (await navigator.mediaDevices.enumerateDevices()).length <=1 ? 'user' : 'environment';
+        const facingMode =
+          (await (await navigator.mediaDevices.enumerateDevices()).length) <= 1
+            ? "user"
+            : "environment";
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode
-          }
+            facingMode,
+            aspectRatio: 20 / 9,
+          },
         });
         video.current.srcObject = stream;
       } catch (error) {
@@ -59,15 +64,18 @@ const Camera = ({ onSnap, onShowPreview }) => {
   }, []);
   const snap = () => {
     const photo = getImage(video.current);
-    onSnap && onSnap(photo);
+    const img = document.createElement("img");
+    img.src = photo;
+    onSnap && onSnap({ height: img.height, width: img.width, photo });
   };
   return (
-    <>
-      <CameraWrapper>
-        <Video playsInline autoPlay ref={video} />
-        <Button onClick={snap} />
-      </CameraWrapper>
-    </>
+    <CameraWrapper>
+      <Video playsInline autoPlay ref={video} />
+      <Button onClick={snap} />
+    </CameraWrapper>
   );
+};
+Camera.propTypes = {
+  onSnap: PropTypes.func,
 };
 export default Camera;
