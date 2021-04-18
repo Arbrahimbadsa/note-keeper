@@ -51,6 +51,9 @@ const LoginView = ({ onSuccess }) => {
         setUser(user);
       });
   };
+  const handleAnnonymousLogin = async () => {
+    await firebase.auth().signInAnonymously();
+  };
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -69,6 +72,9 @@ const LoginView = ({ onSuccess }) => {
       <LoginButton>Login</LoginButton>
       <LoginButton onClick={handleLoginWithGoogle}>
         Login With Google
+      </LoginButton>
+      <LoginButton onClick={handleAnnonymousLogin}>
+        Login Annonymously
       </LoginButton>
     </LoginViewWrapper>
   );
