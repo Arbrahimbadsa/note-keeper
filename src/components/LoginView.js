@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import firebase from "../firebase";
-import PropTypes from "prop-types";
 import "firebase/auth";
 const LoginViewWrapper = styled.div`
   height: 100vh;
@@ -39,47 +38,30 @@ const Input = styled.input`
     outline: none;
   }
 `;
-const LoginView = ({ onSuccess }) => {
-  const [user, setUser] = useState(null);
-  const handleLoginWithGoogle = () => {
-    firebase
-      .auth()
-      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .then(async () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const { user } = await firebase.auth().signInWithPopup(provider);
-        setUser(user);
-      });
+const LoginView = () => {
+  const handleLoginWithGoogle = async () => {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      await firebase.auth().signInWithPopup(provider);
+    } catch (error) {
+      alert(error.message);
+    }
   };
   const handleAnnonymousLogin = async () => {
     await firebase.auth().signInAnonymously();
   };
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // login success
-        onSuccess(user);
-      } else {
-        // logout
-        onSuccess(null);
-      }
-    });
-  }, [onSuccess]);
   return (
     <LoginViewWrapper>
-      <Input placeholder="Enter your username" />
+      {/* <Input placeholder="Enter your username" />
       <Input placeholder="Enter your password" />
-      <LoginButton>Login</LoginButton>
+      <LoginButton>Login</LoginButton> */}
       <LoginButton onClick={handleLoginWithGoogle}>
         Login With Google
       </LoginButton>
-      <LoginButton onClick={handleAnnonymousLogin}>
+      {/* <LoginButton onClick={handleAnnonymousLogin}>
         Login Annonymously
-      </LoginButton>
+      </LoginButton> */}
     </LoginViewWrapper>
   );
-};
-LoginView.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
 };
 export default LoginView;

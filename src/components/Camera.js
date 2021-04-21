@@ -1,13 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import LoginContext from "../context";
 const CameraWrapper = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100vw;
 `;
 const Video = styled.video`
   postition: absolute;
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   left: 0;
   top: 0;
@@ -35,6 +36,7 @@ const Button = styled.button`
 `;
 const Camera = ({ onSnap }) => {
   const video = useRef(null);
+  const { stream } = useContext(LoginContext);
   const getImage = (video) => {
     const c = document.createElement("canvas");
     c.height = window.innerHeight;
@@ -44,24 +46,8 @@ const Camera = ({ onSnap }) => {
     return c.toDataURL();
   };
   useEffect(() => {
-    (async () => {
-      try {
-        const facingMode =
-          (await (await navigator.mediaDevices.enumerateDevices()).length) <= 1
-            ? "user"
-            : "environment";
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode,
-            aspectRatio: 20 / 9,
-          },
-        });
-        video.current.srcObject = stream;
-      } catch (error) {
-        //..
-      }
-    })();
-  }, []);
+    video.current.srcObject = stream;
+  }, [stream]);
   const snap = () => {
     const photo = getImage(video.current);
     const img = document.createElement("img");

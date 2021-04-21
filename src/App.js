@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginView from "./components/LoginView";
 import Showcase from "./components/Showcase";
 import LoginContext from "./context";
@@ -7,9 +7,7 @@ import firebase from "./firebase";
 const AppWrapper = styled.div``;
 const App = () => {
   const [user, setUser] = useState(null);
-  const handleLoginSuccess = (user) => {
-    setUser(user);
-  };
+  const [stream, setStream] = useState(null);
   const handleLogOut = () => {
     firebase
       .auth()
@@ -18,11 +16,56 @@ const App = () => {
         setUser(null);
       });
   };
+  /**
+   * This will generate a video stream behind the scene
+   * and thus we will be able to remove the init time...
+   */
+  useEffect(() => {
+    (async () => {
+      try {
+        const contraints = navigator.mediaDevices.getSupportedConstraints();
+        console.log(contraints);
+        const facingMode =
+          (await (await navigator.mediaDevices.enumerateDevices()).length) <= 1
+            ? "user"
+            : "environment";
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode,
+            aspectRatio: 20 / 9,
+            focusMode: "auto",
+            whiteBalanceMode: "continuous",
+          },
+          
+        });
+        setStream(stream);
+      } catch (error) {
+        console.log(JSON.stringify(error));
+      }
+    })();
+  }, []);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // signed in successful
+        setUser(user);
+        console.log(user);
+      } else {
+        // if logout happens
+        setUser(null);
+      }
+    });
+  }, []);
   return (
-    <LoginContext.Provider value={user}>
+    <LoginContext.Provider
+      value={{
+        ...user,
+        stream,
+      }}
+    >
       <AppWrapper>
-        {!user && <LoginView onSuccess={handleLoginSuccess} />}
-        {user && <Showcase onUserLogOut={handleLogOut} />}
+        {!user && <LoginView />}
+        {user && stream && <Showcase onUserLogOut={handleLogOut} />}
       </AppWrapper>
     </LoginContext.Provider>
   );

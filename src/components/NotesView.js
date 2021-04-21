@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { images } from "../data/images";
 import { Lightbox } from "react-modal-image";
 import firebase from "../firebase";
 import LoginContext from "../context";
 const NotesContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding-top: 15px;
   height: auto;
   user-select: none;
+  padding-top: 70px;
 `;
 const NoteName = styled.p`
   color: #fff;
@@ -75,6 +74,14 @@ const Circle = styled.circle`
   -webkit-animation: turn 1.35s ease-in-out infinite;
   animation: turn 1.35s ease-in-out infinite;
 `;
+const Info = styled.p`
+  height: auto;
+  width: 100%;
+  padding: 10px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  color: gray;
+`;
 
 ////////////////// Firebase Refs /////////////////////
 const db = firebase.database();
@@ -84,6 +91,7 @@ const NotesView = () => {
   const [lightboxData, setLightboxData] = useState(null);
   const [imageData, setImageData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [noImageFound, setNoImageFound] = useState(false);
   const { uid } = useContext(LoginContext);
   const handleShowLightbox = (data) => {
     setShowLighbox(!showLightbox);
@@ -92,23 +100,30 @@ const NotesView = () => {
   const hideLightBox = () => {
     setShowLighbox(!showLightbox);
   };
-  // fetch images from firebase database
   useEffect(() => {
-    const fetchImages = async () => {
-      const imagesRef = db.ref(`images/${uid}`);
-      const data = await imagesRef.once("value");
-      if (data.exists()) {
-        // if data exists in database
-        const val = data.val();
-        const values = Object.values(val);
-        setImageData(values);
-      }
+    const imagesRef = db.ref(`images/${uid}`);
+    setImageData([]);
+    imagesRef.on("child_added", (snap) => {
+      const val = snap.val();
+      console.log(val);
+      setImageData((data) => [...data, val]);
       setIsLoading(false);
-    };
-    fetchImages();
+    });
   }, [uid]);
+  useEffect(() => {
+    const imagesRef = db.ref(`images/${uid}`);
+    imagesRef.once("value").then((data) => {
+      if (!data.exists()) {
+        setIsLoading(false);
+        setNoImageFound(true);
+      } else {
+        setNoImageFound(false);
+      }
+    });
+  }, [uid, imageData]);
   return (
     <NotesContainer>
+      {noImageFound && <Info>No image found, please take one.</Info>}
       {isLoading && (
         <Svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
           <Circle
@@ -135,6 +150,7 @@ const NotesView = () => {
           medium={lightboxData.image}
           hideDownload={true}
           alt={lightboxData.name}
+          showRotate={true}
           onClose={hideLightBox}
         />
       )}

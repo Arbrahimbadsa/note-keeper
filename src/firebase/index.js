@@ -1,12 +1,12 @@
 import firebase from "firebase";
 const config = {
-  apiKey: "AIzaSyC95t8HGI8UDW7cIZWBCf3R7Lkmu8c4QRQ",
-  authDomain: "card-view-bf018.firebaseapp.com",
-  databaseURL: "https://card-view-bf018.firebaseio.com",
-  projectId: "card-view-bf018",
-  storageBucket: "card-view-bf018.appspot.com",
-  messagingSenderId: "1098575629353",
-  appId: "1:1098575629353:web:9f8b06c45ab3055b3aa038",
+  apiKey: "AIzaSyAZhvmZYFIEwZxtqf6E_vmGmNkZF_oUJAE",
+  authDomain: "note-keeper-f1de8.firebaseapp.com",
+  databaseURL: "https://note-keeper-f1de8-default-rtdb.firebaseio.com",
+  projectId: "note-keeper-f1de8",
+  storageBucket: "note-keeper-f1de8.appspot.com",
+  messagingSenderId: "722421639421",
+  appId: "1:722421639421:web:c68fc9ec78af8a360c7694",
 };
 firebase.initializeApp(config);
 export default firebase;

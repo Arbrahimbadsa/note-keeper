@@ -1,13 +1,19 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import LoginContext from "../context";
 import CameraView from "./CameraView";
 import NotesView from "./NotesView";
 import PropTypes from "prop-types";
 import "firebase/auth";
-const Wrapper = styled.div``;
+import { CameraAlt, ExitToApp, Search } from "@material-ui/icons";
+const Wrapper = styled.div`
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow: hidden;
+`;
 const ShowcaseWrapper = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   background: #eee;
   overflow-y: scroll;
@@ -36,6 +42,11 @@ const SiteName = styled.h3`
 const HeaderMeta = styled.div`
   display: flex;
   align-items: center;
+`;
+const IconWrapper = styled.div`
+  color: #1ecbe1;
+  cursor: pointer;
+  margin-left: 10px;
 `;
 const Button = styled.button`
   border: none;
@@ -88,7 +99,6 @@ const CircledImage = styled.img`
   width: 35px;
   border-radius: 50%;
   cursor: pointer;
-  margin-right: 10px;
   &:hover {
     opacity: 0.7;
   }
@@ -96,6 +106,7 @@ const CircledImage = styled.img`
 const SearchContainer = styled.div`
   display: flex;
   padding: 10px;
+  margin-top: 60px;
 `;
 const SearchInput = styled.input`
   height: 35px;
@@ -114,11 +125,21 @@ const SearchInput = styled.input`
 const Showcase = ({ onUserLogOut }) => {
   const user = useContext(LoginContext);
   const [showCamera, setShowCamera] = useState(false);
-  const handleTakePicture = () => setShowCamera(!showCamera);
-  const handleHideCamera = () => setShowCamera(!showCamera);
+  const [animeDone, setAnimeDone] = useState(false);
+  const handleTakePicture = () => {
+    setShowCamera(!showCamera);
+  };
+  const handleHideCamera = (refresh) => {
+    setAnimeDone(false);
+    setTimeout(() => {
+      setShowCamera(!showCamera);
+    }, 350);
+  };
+
   return (
     <Wrapper>
-      {!showCamera ? (
+      {showCamera && <CameraView onCameraHide={handleHideCamera} />}
+      {!animeDone && (
         <ShowcaseWrapper>
           <HeaderContainer>
             <SiteName>Note Keeper</SiteName>
@@ -133,18 +154,23 @@ const Showcase = ({ onUserLogOut }) => {
             </Menu>
             <HeaderMeta>
               <CircledImage src={user && user.photoURL} />
-              <Button onClick={onUserLogOut}>Logout</Button>
+              <IconWrapper>
+                <Search />
+              </IconWrapper>
+              <IconWrapper onClick={onUserLogOut}>
+                <ExitToApp />
+              </IconWrapper>
             </HeaderMeta>
           </HeaderContainer>
-          <SearchContainer>
+          {/* <SearchContainer>
             <SearchInput placeholder="Enter keyword i.e. integration, straight line.." />
             <Button>Search</Button>
-          </SearchContainer>
+          </SearchContainer> */}
           <NotesView />
-          <TakePicture onClick={handleTakePicture}>+</TakePicture>
+          <TakePicture onClick={handleTakePicture}>
+            <CameraAlt />
+          </TakePicture>
         </ShowcaseWrapper>
-      ) : (
-        <CameraView onCameraHide={handleHideCamera} />
       )}
     </Wrapper>
   );

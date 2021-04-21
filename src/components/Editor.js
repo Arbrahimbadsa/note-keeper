@@ -4,7 +4,7 @@ import ReactCrop from "react-image-crop";
 import styled from "styled-components";
 import "react-image-crop/dist/ReactCrop.css";
 const EditorWrapper = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   position: absolute;
   top: 0;
