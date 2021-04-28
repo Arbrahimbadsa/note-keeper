@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/note-keeper/static/css/main.55c3a218.chunk.css",
+    "main.css": "/note-keeper/static/css/main.5a8a3ac7.chunk.css",
     "main.js": "/note-keeper/static/js/main.6358f9b0.chunk.js",
     "main.js.map": "/note-keeper/static/js/main.6358f9b0.chunk.js.map",
     "runtime-main.js": "/note-keeper/static/js/runtime-main.09e63036.js",
@@ -10,7 +10,7 @@
     "static/js/2.da8f921c.chunk.js.map": "/note-keeper/static/js/2.da8f921c.chunk.js.map",
     "index.html": "/note-keeper/index.html",
     "static/css/2.21050121.chunk.css.map": "/note-keeper/static/css/2.21050121.chunk.css.map",
-    "static/css/main.55c3a218.chunk.css.map": "/note-keeper/static/css/main.55c3a218.chunk.css.map",
+    "static/css/main.5a8a3ac7.chunk.css.map": "/note-keeper/static/css/main.5a8a3ac7.chunk.css.map",
     "static/js/2.da8f921c.chunk.js.LICENSE.txt": "/note-keeper/static/js/2.da8f921c.chunk.js.LICENSE.txt",
     "static/media/login-bg.f943f8e8.jpg": "/note-keeper/static/media/login-bg.f943f8e8.jpg"
   },
@@ -18,7 +18,7 @@
     "static/js/runtime-main.09e63036.js",
     "static/css/2.21050121.chunk.css",
     "static/js/2.da8f921c.chunk.js",
-    "static/css/main.55c3a218.chunk.css",
+    "static/css/main.5a8a3ac7.chunk.css",
     "static/js/main.6358f9b0.chunk.js"
   ]
 }
