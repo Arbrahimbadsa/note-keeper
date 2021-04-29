@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Edit, NavigateBefore, NavigateNext } from "@material-ui/icons";
+import { Edit, NavigateBefore, Save } from "@material-ui/icons";
 const PreviewImage = styled.img`
   height: auto;
   width: auto;
@@ -31,7 +31,7 @@ const Icon = styled.div`
     opacity: 0.8;
   }
 `;
-const Control = styled.div`
+const Control = styled.form`
   position: absolute;
   z-index: 50;
   top: 0;
@@ -41,6 +41,7 @@ const Control = styled.div`
   height: 100%;
   align-items: flex-end;
   padding: 50px;
+  background: rgba(0, 0, 0, 0.6);
 `;
 const InputsHolder = styled.div`
   position: absolute;
@@ -48,7 +49,7 @@ const InputsHolder = styled.div`
   height: auto;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   flex-direction: column;
   align-items: center;
   top: 50%;
@@ -66,6 +67,8 @@ const NameInput = styled.input`
   font-size: 20px;
   font-weight: 400;
   font-family: "Montserrat", sans-serif;
+  position: relative;
+  display: block;
   &:focus {
     outline: none;
   }
@@ -93,7 +96,13 @@ const LoadingIndicator = styled.div`
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
 `;
-const PreviewView = ({ image, onRetake, onShowEditor, onImageSave, isSaving }) => {
+const PreviewView = ({
+  image,
+  onRetake,
+  onShowEditor,
+  onImageSave,
+  isSaving,
+}) => {
   const wrapper = useRef(null);
   const [tValue, setTvalue] = useState("0");
   const [noteName, setNoteName] = useState("");
@@ -102,16 +111,24 @@ const PreviewView = ({ image, onRetake, onShowEditor, onImageSave, isSaving }) =
   ]);
   return (
     <PreviewWrapper ref={wrapper}>
+      {/* Loading indicatior. */}
       {isSaving && <LoadingIndicator>Saving...</LoadingIndicator>}
+      {/* Image previewer */}
       <PreviewImage src={image} />
-      <InputsHolder>
-        <NameInput
-          value={noteName}
-          onChange={(e) => setNoteName(e.currentTarget.value)}
-          placeholder="Enter your note name"
-        />
-      </InputsHolder>
-      <Control>
+      {/* Control form, holds input, back, edit and save. */}
+      <Control
+        onSubmit={(e) => {
+          e.preventDefault();
+          onImageSave(noteName);
+        }}
+      >
+        <InputsHolder>
+          <NameInput
+            value={noteName}
+            onChange={(e) => setNoteName(e.currentTarget.value)}
+            placeholder="Enter your note name"
+          />
+        </InputsHolder>
         {/* Back icon */}
         <Icon
           onClick={() => {
@@ -129,7 +146,7 @@ const PreviewView = ({ image, onRetake, onShowEditor, onImageSave, isSaving }) =
         </Icon>
         {/* Forward icon */}
         <Icon onClick={() => onImageSave(noteName)}>
-          <NavigateNext />
+          <Save />
         </Icon>
       </Control>
     </PreviewWrapper>

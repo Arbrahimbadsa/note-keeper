@@ -1,5 +1,5 @@
 import Camera from "../components/Camera";
-import Editor from "../components/Editor";
+import EditorView from "./EditorView";
 import styled from "styled-components";
 import { useContext, useEffect, useRef, useState } from "react";
 import { v4 as uuiv4 } from "uuid";
@@ -103,7 +103,7 @@ const CameraView = ({ onCameraHide, stream }) => {
         />
       )}
       {showEditor && (
-        <Editor
+        <EditorView
           image={image}
           onProceed={handleOnProceed}
           onCancel={handleEditorCancel}

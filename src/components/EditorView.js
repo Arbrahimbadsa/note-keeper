@@ -33,7 +33,7 @@ const EditorControl = styled.div`
   padding: 20px;
   user-select: none;
 `;
-const Editor = ({ image, onProceed, onCancel }) => {
+const EditorView = ({ image, onProceed, onCancel }) => {
   const imgRef = useRef(null);
   const [crop, setCrop] = useState({
     x: 35,
@@ -100,9 +100,9 @@ const Editor = ({ image, onProceed, onCancel }) => {
     </EditorWrapper>
   );
 };
-Editor.propTypes = {
+EditorView.propTypes = {
   image: PropTypes.string,
   onProceed: PropTypes.func,
   onCancel: PropTypes.func
 };
-export default Editor;
+export default EditorView;

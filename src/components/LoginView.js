@@ -2,41 +2,57 @@ import React from "react";
 import styled from "styled-components";
 import firebase from "../firebase";
 import "firebase/auth";
+import LoginBg from "../assets/login-bg.jpg";
 const LoginViewWrapper = styled.div`
   height: 100vh;
   width: 100vw;
-  background: #eee;
+  background: url(${LoginBg});
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  user-select: none;
+`;
+const Backdrop = styled.div`
+  height: 100%;
+  width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.65);
 `;
-const LoginButton = styled.button`
-  height: 35px;
-  width: 200px;
-  background: #1ecbe1;
+const Title = styled.div`
+  font-family: "Montserrat", sans-serif;
   color: #fff;
-  cursor: pointer;
-  border: none;
-  margin-bottom: 5px;
-  border-radius: 20px;
-  &:hover {
-    box-shadow: 0 5px 10px rgba(154, 160, 185, 0.05),
-      0 15px 40px rgba(166, 173, 201, 0.2);
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+`;
+const TitleName = styled.h3`
+  flex: 0 0 auto;
+  margin: 0 10px;
+  font-weight: 500;
+  font-size: 1.8rem;
+  @media screen and (max-width: 720px) {
+    font-size: 1rem;
   }
 `;
-const Input = styled.input`
-  height: 35px;
-  width: 30vw;
-  min-width: 200px;
+const IconHolder = styled.div`
+  justify-content: center;
+  align-items: center;
+  display: flex;
+`;
+const Icon = styled.div`
+  height: auto;
+  width: auto;
+`;
+const Line = styled.div`
+  height: 3px;
+  width: 20%;
   background: #fff;
-  border-radius: 20px;
-  border: none;
-  padding: 15px;
-  margin: 0 0 10px 0;
-  &:focus {
-    outline: none;
-  }
+  border-radius: 5px;
 `;
 const LoginView = () => {
   const handleLoginWithGoogle = async () => {
@@ -47,20 +63,31 @@ const LoginView = () => {
       alert(error.message);
     }
   };
-  const handleAnnonymousLogin = async () => {
-    await firebase.auth().signInAnonymously();
+  const handleLoginWithGithub = async () => {
+    try {
+      const provider = new firebase.auth.GithubAuthProvider();
+      await firebase.auth().signInWithPopup(provider);
+    } catch (error) {
+      alert(error.message);
+    }
   };
   return (
     <LoginViewWrapper>
-      {/* <Input placeholder="Enter your username" />
-      <Input placeholder="Enter your password" />
-      <LoginButton>Login</LoginButton> */}
-      <LoginButton onClick={handleLoginWithGoogle}>
-        Login With Google
-      </LoginButton>
-      {/* <LoginButton onClick={handleAnnonymousLogin}>
-        Login Annonymously
-      </LoginButton> */}
+      <Backdrop>
+        <Title>
+          <Line />
+          <TitleName>Login with</TitleName>
+          <Line />
+        </Title>
+        <IconHolder>
+          <Icon onClick={handleLoginWithGoogle}>
+            <ion-icon name="logo-google"></ion-icon>
+          </Icon>
+          <Icon onClick={handleLoginWithGithub}>
+            <ion-icon name="logo-github"></ion-icon>
+          </Icon>
+        </IconHolder>
+      </Backdrop>
     </LoginViewWrapper>
   );
 };

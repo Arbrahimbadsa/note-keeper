@@ -3,12 +3,26 @@ import styled from "styled-components";
 import { Lightbox } from "react-modal-image";
 import firebase from "../firebase";
 import LoginContext from "../context";
+import { Delete } from "@material-ui/icons";
 const NotesContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   height: auto;
   user-select: none;
-  padding-top: 70px;
+  padding-top: 66px;
+`;
+const NoteControlContainer = styled.div`
+  height: auto;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  opacity: 0;
+`;
+const IconWrapper = styled.div`
+  height: auto;
+  width: auto;
+  padding: 5px;
+  color: #1ecbe1;
 `;
 const NoteName = styled.p`
   color: #fff;
@@ -31,6 +45,9 @@ const Note = styled.div`
     opacity: 0.8;
   }
   &:hover ${NoteName} {
+    opacity: 1;
+  }
+  &:hover ${NoteControlContainer} {
     opacity: 1;
   }
 `;
@@ -86,12 +103,13 @@ const Info = styled.p`
 ////////////////// Firebase Refs /////////////////////
 const db = firebase.database();
 
-const NotesView = () => {
+const NotesView = ({ onCount }) => {
   const [showLightbox, setShowLighbox] = useState(false);
   const [lightboxData, setLightboxData] = useState(null);
   const [imageData, setImageData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [noImageFound, setNoImageFound] = useState(false);
+  const [noteCount, setNoteCount] = useState(0);
   const { uid } = useContext(LoginContext);
   const handleShowLightbox = (data) => {
     setShowLighbox(!showLightbox);
@@ -100,6 +118,11 @@ const NotesView = () => {
   const hideLightBox = () => {
     setShowLighbox(!showLightbox);
   };
+  const handleDelete = ({ uid: imgId }) => {
+    const imageRef = db.ref(`images/${uid}/${imgId}`);
+    setImageData(data => data.filter(v => v.uid !== imgId));
+    imageRef.set(null);
+  };
   useEffect(() => {
     const imagesRef = db.ref(`images/${uid}`);
     setImageData([]);
@@ -107,6 +130,7 @@ const NotesView = () => {
       const val = snap.val();
       console.log(val);
       setImageData((data) => [...data, val]);
+      setNoteCount((count) => count + 1);
       setIsLoading(false);
     });
   }, [uid]);
@@ -121,6 +145,10 @@ const NotesView = () => {
       }
     });
   }, [uid, imageData]);
+  useEffect(() => {
+    onCount(noteCount);
+  }, [noteCount, onCount]);
+
   return (
     <NotesContainer>
       {noImageFound && <Info>No image found, please take one.</Info>}
@@ -139,9 +167,19 @@ const NotesView = () => {
       {imageData &&
         !isLoading &&
         imageData.map((d) => (
-          <Note onClick={() => handleShowLightbox(d)}>
-            <NoteImage src={d && d.image} />
-            <NoteName>{d && d.name}</NoteName>
+          <Note>
+            <NoteImage
+              src={d && d.image}
+              onClick={() => handleShowLightbox(d)}
+            />
+            <NoteName onClick={() => handleShowLightbox(d)}>
+              {d && d.name}
+            </NoteName>
+            <NoteControlContainer>
+              <IconWrapper onClick={() => handleDelete(d)}>
+                <Delete />
+              </IconWrapper>
+            </NoteControlContainer>
           </Note>
         ))}
       {showLightbox && lightboxData && (

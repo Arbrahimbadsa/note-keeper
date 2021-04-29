@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import LoginContext from "../context";
 import CameraView from "./CameraView";
 import NotesView from "./NotesView";
+import SearchView from "./SearchView";
 import PropTypes from "prop-types";
 import "firebase/auth";
-import { CameraAlt, ExitToApp, Search } from "@material-ui/icons";
+import { CameraAlt, Search } from "@material-ui/icons";
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
@@ -27,7 +28,7 @@ const HeaderContainer = styled.div`
   width: 100%;
   padding: 15px;
   align-items: center;
-  background: #fff;
+  background: #111c33;
   box-shadow: 0 1px 1.5px rgba(0, 0, 0, 0.1);
   user-select: none;
   position: fixed;
@@ -48,17 +49,6 @@ const IconWrapper = styled.div`
   cursor: pointer;
   margin-left: 10px;
 `;
-const Button = styled.button`
-  border: none;
-  color: #fff;
-  background: #1ecbe1;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  &:hover {
-    opacity: 0.7;
-  }
-`;
 const Menu = styled.div`
   flex: 1 1 auto;
   display: flex;
@@ -69,7 +59,7 @@ const Menu = styled.div`
 `;
 const MenuItem = styled.div`
   margin: 0 10px;
-  color: #6e6d7a;
+  color: gray;
   transition: 0.3s;
   cursor: pointer;
   &:hover {
@@ -85,7 +75,7 @@ const TakePicture = styled.div`
   position: absolute;
   bottom: 20px;
   right: 20px;
-  background: #1ecbe1;
+  background: #111c33;
   color: #fff;
   display: flex;
   justify-content: center;
@@ -95,28 +85,71 @@ const TakePicture = styled.div`
   cursor: pointer;
 `;
 const CircledImage = styled.img`
-  height: 35px;
-  width: 35px;
+  height: ${(props) => props.dim}px;
+  width: ${(props) => props.dim}px;
   border-radius: 50%;
   cursor: pointer;
   &:hover {
     opacity: 0.7;
   }
 `;
-const SearchContainer = styled.div`
+const ProfileWrapper = styled.div`
+  height: 300px;
+  width: 300px;
+  position: absolute;
+  z-index: 250;
+  top: 70px;
+  right: 50px;
+  background: #111c33;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 3.5px;
   display: flex;
-  padding: 10px;
-  margin-top: 60px;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  padding: 15px;
+  @media screen and (max-width: 720px) {
+    right: 5px;
+  }
+`;
+const Text = styled.p`
+  color: ${(props) => props.color};
+  font-family: "Montserrat", sans-serif;
+  font-weight: 450;
+  margin-top: 8px;
+  font-size: ${(props) => props.size}px;
+`;
+const Button = styled.div`
+  height: auto;
+  width: auto;
+  background: #1ecbe1;
+  color: #fff;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 20px;
+  margin-top: 35px;
+  font-size: 15px;
+  cursor: pointer;
+  border: 2px solid #fff;
+`;
+const SearchContainer = styled.div`
+  height: auto;
+  min-width: 300px;
+  position: absolute;
+  top: 75px;
+  right: 5px;
+  z-index: 300;
 `;
 const SearchInput = styled.input`
-  height: 35px;
-  background: #fff;
-  flex: 1;
+  height: 40px;
+  width: 100%;
+  background: #111c33;
   border: none;
-  padding: 10px;
-  margin-right: 10px;
-  border-radius: 5px;
-  box-shadow: 0 1px 1.5px rgba(0, 0, 0, 0.1);
+  color: #1ecbe1;
+  padding: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   &:focus {
     outline: none;
   }
@@ -126,16 +159,25 @@ const Showcase = ({ onUserLogOut }) => {
   const user = useContext(LoginContext);
   const [showCamera, setShowCamera] = useState(false);
   const [animeDone, setAnimeDone] = useState(false);
-  const handleTakePicture = () => {
-    setShowCamera(!showCamera);
-  };
+  const [showProfile, setShowProfile] = useState(false);
+  const [showSearchInput, setShowSearchInput] = useState(false);
+  const [noteCount, setNoteCount] = useState(0);
   const handleHideCamera = (refresh) => {
     setAnimeDone(false);
     setTimeout(() => {
       setShowCamera(!showCamera);
     }, 350);
   };
-
+  const handleShowProfile = () => {
+    setShowSearchInput(false);
+    setShowProfile(!showProfile);
+  };
+  const handleNoteCount = (count) => setNoteCount(count);
+  const handleShowSearchInput = () => {
+    setShowSearchInput(!showSearchInput);
+    setShowProfile(false);
+  };
+  const handleTakePicture = () => setShowCamera(!showCamera);
   return (
     <Wrapper>
       {showCamera && <CameraView onCameraHide={handleHideCamera} />}
@@ -153,20 +195,41 @@ const Showcase = ({ onUserLogOut }) => {
               <MenuItem>I&Ct</MenuItem>
             </Menu>
             <HeaderMeta>
-              <CircledImage src={user && user.photoURL} />
-              <IconWrapper>
+              <CircledImage
+                dim={35}
+                onClick={handleShowProfile}
+                src={user && user.photoURL}
+              />
+              {/* Profile */}
+              {showProfile && (
+                <ProfileWrapper onBlur={handleShowProfile}>
+                  <CircledImage dim={65} src={user && user.photoURL} />
+                  <Text size={18} color="#fff">
+                    {user && user.displayName}
+                  </Text>
+                  <Text size={14} color="gray">
+                    {user && user.email}
+                  </Text>
+                  <Text color="gray" size={15}>
+                    Notes: {noteCount === 0 ? "..." : noteCount}
+                  </Text>
+                  <Button onClick={onUserLogOut}>Logout</Button>
+                </ProfileWrapper>
+              )}
+              <IconWrapper onClick={handleShowSearchInput}>
                 <Search />
-              </IconWrapper>
-              <IconWrapper onClick={onUserLogOut}>
-                <ExitToApp />
               </IconWrapper>
             </HeaderMeta>
           </HeaderContainer>
-          {/* <SearchContainer>
-            <SearchInput placeholder="Enter keyword i.e. integration, straight line.." />
-            <Button>Search</Button>
-          </SearchContainer> */}
-          <NotesView />
+          {showSearchInput && (
+            // <SearchContainer>
+            //   <SearchInput placeholder="Enter keyword to search..." />
+            // </SearchContainer>
+            <SearchView onClose={handleShowSearchInput} />
+          )}
+          {/* Notes */}
+          <NotesView onCount={handleNoteCount} />
+          {/* Take pictur button */}
           <TakePicture onClick={handleTakePicture}>
             <CameraAlt />
           </TakePicture>
