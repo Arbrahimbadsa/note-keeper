@@ -120,7 +120,7 @@ const NotesView = ({ onCount }) => {
   };
   const handleDelete = ({ uid: imgId }) => {
     const imageRef = db.ref(`images/${uid}/${imgId}`);
-    setImageData(data => data.filter(v => v.uid !== imgId));
+    setImageData((data) => data.filter((v) => v.uid !== imgId));
     imageRef.set(null);
   };
   useEffect(() => {
@@ -167,7 +167,7 @@ const NotesView = ({ onCount }) => {
       {imageData &&
         !isLoading &&
         imageData.map((d) => (
-          <Note>
+          <Note key={d.uid}>
             <NoteImage
               src={d && d.image}
               onClick={() => handleShowLightbox(d)}

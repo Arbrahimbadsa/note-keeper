@@ -134,26 +134,6 @@ const Button = styled.div`
   cursor: pointer;
   border: 2px solid #fff;
 `;
-const SearchContainer = styled.div`
-  height: auto;
-  min-width: 300px;
-  position: absolute;
-  top: 75px;
-  right: 5px;
-  z-index: 300;
-`;
-const SearchInput = styled.input`
-  height: 40px;
-  width: 100%;
-  background: #111c33;
-  border: none;
-  color: #1ecbe1;
-  padding: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  &:focus {
-    outline: none;
-  }
-`;
 
 const Showcase = ({ onUserLogOut }) => {
   const user = useContext(LoginContext);
