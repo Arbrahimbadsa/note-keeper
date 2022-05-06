@@ -58,6 +58,8 @@ const FlatNote = styled.div`
   width: 100%;
   background: #fff;
   border-radius: 5px;
+  margin: 10px 0;
+  color: #000;
 `;
 const SearchView = ({ onClose }) => {
   const [notes, setNotes] = useState([]);

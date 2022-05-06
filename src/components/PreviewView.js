@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Edit, NavigateBefore, Save } from "@material-ui/icons";
+import { Add, Edit, NavigateBefore, Save } from "@material-ui/icons";
 const PreviewImage = styled.img`
   height: auto;
   width: auto;
@@ -101,6 +101,7 @@ const PreviewView = ({
   onRetake,
   onShowEditor,
   onImageSave,
+  onAddButtonClick,
   isSaving,
 }) => {
   const wrapper = useRef(null);
@@ -119,7 +120,8 @@ const PreviewView = ({
       <Control
         onSubmit={(e) => {
           e.preventDefault();
-          onImageSave(noteName);
+          if (noteName) onImageSave(noteName);
+          else alert("Please enter a note name.");
         }}
       >
         <InputsHolder>
@@ -144,8 +146,17 @@ const PreviewView = ({
         <Icon onClick={onShowEditor}>
           <Edit />
         </Icon>
+        {/* Add Icon */}
+        <Icon onClick={onAddButtonClick}>
+          <Add />
+        </Icon>
         {/* Forward icon */}
-        <Icon onClick={() => onImageSave(noteName)}>
+        <Icon
+          onClick={() => {
+            if (noteName) onImageSave(noteName);
+            else alert("Please enter a note a name");
+          }}
+        >
           <Save />
         </Icon>
       </Control>

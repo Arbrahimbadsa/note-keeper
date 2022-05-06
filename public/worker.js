@@ -1,4 +1,53 @@
 /* eslint-disable no-restricted-globals */
+
+
+// console.log(location)
+
+// const CACHE_NAME = 'my-site-cache-v1';
+// const assets = [
+//     "/",
+//     "/offline.html"
+// ];
+
+// self.addEventListener("install", (event) => {
+//     event.waitUntil(
+//         caches.open(CACHE_NAME).then(cache => {
+//             console.log('Cache open');
+//             return cache.addAll(assets);
+//         })
+//     );
+// });
+
+// self.addEventListener("fetch", (event) => {
+//     event.respondWith(
+//         caches.match(event.request).then(res => {
+//             if (res) return res;
+//             return fetch(event.request).then(response => {
+//                 if (!response || response.status !== 200 || response.type !== "basic") return response;
+//                 const toCache = response.clone();
+//                 caches.open(CACHE_NAME).then(cache => {
+//                     cache.put(event.request, toCache);
+//                 });
+//                 return response;
+//             });
+//         })
+//     );
+// });
+
+// self.addEventListener("activate", (event) => {
+//     const allowList = [];
+//     allowList.push(CACHE_NAME);
+//     event.waitUntil(
+//         caches.keys().then(cachesNames => {
+//             return Promise.all(
+//                 cachesNames.map(cacheName => {
+//                     if (allowList.indexOf(cacheName) === -1) return caches.delete(cacheName);
+//                 })
+//             );
+//         })
+//     );
+// });
+
 const OFFLINE_VERSION = 1;
 const CACHE_NAME = 'offline';
 // Customize this with a different URL if needed.

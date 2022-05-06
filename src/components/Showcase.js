@@ -135,6 +135,14 @@ const Button = styled.div`
   border: 2px solid #fff;
 `;
 
+const TopMenu = ({items}) => {
+  return (
+    <Menu>
+    {items && items.map(item => <MenuItem key={item.id}>{item.name}</MenuItem>)}
+  </Menu>
+  )
+};
+
 const Showcase = ({ onUserLogOut }) => {
   const user = useContext(LoginContext);
   const [showCamera, setShowCamera] = useState(false);
@@ -142,6 +150,7 @@ const Showcase = ({ onUserLogOut }) => {
   const [showProfile, setShowProfile] = useState(false);
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [noteCount, setNoteCount] = useState(0);
+  const topMenus = [{id: 0, name: "Bangla"}, {id: 0, name: "Bangla"}, {id: 0, name: "Bangla"}, {id: 0, name: "Bangla"}, {id: 0, name: "Bangla"}]
   const handleHideCamera = (refresh) => {
     setAnimeDone(false);
     setTimeout(() => {
@@ -165,15 +174,7 @@ const Showcase = ({ onUserLogOut }) => {
         <ShowcaseWrapper>
           <HeaderContainer>
             <SiteName>Note Keeper</SiteName>
-            <Menu>
-              <MenuItem>Bangla</MenuItem>
-              <MenuItem>English</MenuItem>
-              <MenuItem>Math</MenuItem>
-              <MenuItem>Chemistry</MenuItem>
-              <MenuItem>Biology</MenuItem>
-              <MenuItem>Physics</MenuItem>
-              <MenuItem>I&Ct</MenuItem>
-            </Menu>
+            <TopMenu items={topMenus} />
             <HeaderMeta>
               <CircledImage
                 dim={35}

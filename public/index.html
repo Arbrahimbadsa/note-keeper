@@ -44,12 +44,16 @@
     -->
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('%PUBLIC_URL%/worker.js')
-              .then(reg => console.log(`Registered successfully with scope: ${reg.scope}`))
-              .catch(err => console.log(`Service worker error: ${err}`));
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('%PUBLIC_URL%/serviceWorker.js').then(function(registration) {
+            // Registration was successful
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, function(err) {
+            // registration failed :(
+            console.log('ServiceWorker registration failed: ', err);
+          });
         });
-      }
+    }
     </script>
   </body>
 </html>

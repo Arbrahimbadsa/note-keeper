@@ -31,27 +31,28 @@ const TransitionView = ({ from, to, willLast, onClose, children }) => {
         setTvalue(`translate(0)`);
         break;
     }
-    setTimeout(() => {
-      onClose();
-    }, parseInt(willLast));
+    setTimeout(
+      () => {
+        onClose();
+      },
+      parseInt(willLast) < 500 ? 1000 : parseInt(willLast)
+    );
+  };
+  const initialStyle = {
+    transform:
+      from === "left"
+        ? `translateX(-100%)`
+        : from === "right"
+        ? `translateX(100%)`
+        : from === "top"
+        ? `translateY(-100%)`
+        : from === "bottom"
+        ? `translateY(100%)`
+        : null,
+    transition: `transform ${willLast}`,
   };
   return (
-    <Container
-      ref={containerRef}
-      style={{
-        transform:
-          from === "left"
-            ? `translateX(-100%)`
-            : from === "right"
-            ? `translateX(100%)`
-            : from === "top"
-            ? `translateY(-100%)`
-            : from === "bottom"
-            ? `translateY(100%)`
-            : null,
-        transition: `transform ${willLast}`,
-      }}
-    >
+    <Container ref={containerRef} style={initialStyle}>
       {children(handleClose)}
     </Container>
   );

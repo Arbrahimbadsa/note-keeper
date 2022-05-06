@@ -33,7 +33,7 @@ const HideCamera = styled.div`
 ////////////////// Firebase Refs /////////////////////
 const db = firebase.database();
 
-const CameraView = ({ onCameraHide, stream }) => {
+const CameraView = ({ onCameraHide }) => {
   const wrapper = useRef(null);
   const [tValue, setTvalue] = useState("0");
   const [showPreview, setShowPreview] = useState(false);
